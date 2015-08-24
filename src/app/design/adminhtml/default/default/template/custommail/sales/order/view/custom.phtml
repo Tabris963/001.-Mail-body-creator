@@ -2,6 +2,7 @@
 	<?php $_order = $this->getOrder();
 
 	$supplierArray = array();
+	$productsArray = array();
 	$_items = $this->getItemsCollection();
 
 	foreach ($_items as $_item){
@@ -9,14 +10,51 @@
 		$product=Mage::getModel("catalog/product")->load($product_id);
 		$supplier = $product->getAttributeText("supplier");
 
+
+		//element not inside array
 		if(!in_array($supplier, $supplierArray)){
-			//element not inside array
 			array_push($supplierArray, $supplier);
 		}
+
+		$qty = (int)$_item->getQtyOrdered();
+		$sku = $_item->getSku();
+		$supplierSku = $product -> _getData("supplier_sku");
+		$name = $_item->_getData('name');
+
+		$tmpArray = array(
+			"supplierSku" =>$supplierSku,
+			"sku"=> $sku,
+			"name" =>$name,
+			"qty" =>$qty
+			);
+
+		$arrayLng = count($productsArray[$supplier]);
+		echo "<strong>arrayLng: </strong>";
+		echo '<pre>';
+		print_r($arrayLng);
+		echo '</pre>';
+		print "<br />";
+
+		$productsArray[$supplier][$arrayLng] = $tmpArray;
+		
+
+		echo "<strong>tmpArray: </strong>";
+		echo '<pre>';
+		print_r($tmpArray);
+		echo '</pre>';
+		print "<br />";
+		print "<br />";
+		print "<br />";
+
+		unset($tmpArray);
 	}
-	//print "\n\r";
-	//var_dump($supplierArray);
-	?>
+	print "\n\r";
+	print "\n\r";
+	print "\n\r";
+	echo "<strong>productsArray: </strong>";
+	echo '<pre>';
+	print_r($productsArray);
+	echo '</pre>';	?>
 	<select id="selectTEST">
 		<?php 
 		foreach($supplierArray as $key => $value){
@@ -34,7 +72,7 @@
 		print "\n\r"."Hello,"."\n\r";
 		print "Please can we place an order for:"."\n\r";
 
-		$_items = $this->getItemsCollection();
+		/*$_items = $this->getItemsCollection();
 		foreach ($_items as $_item){
 			$qty = (int)$_item->getQtyOrdered();
 			$sku = $_item->getSku();
@@ -48,7 +86,7 @@
 
 			print $qty."x ".$supplierSku.": ".$name."\n\r";
 			print $supplier."\n\r";
-		};
+		};*/
 		print "\n\r";
 
 		print "\n\r";
