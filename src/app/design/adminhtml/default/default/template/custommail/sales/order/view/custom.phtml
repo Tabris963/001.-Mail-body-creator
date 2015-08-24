@@ -11,27 +11,16 @@
 		foreach ($_items as $_item){
 			$qty = (int)$_item->getQtyOrdered();
 			$sku = $_item->getSku();
-			//$skuSupplier = $_item->_getData('suplier_sku');
 			$name = $_item->_getData('name');
 
-			print $qty."x ".$sku.": ".$name."\n\r"; 
-			//print "\n\r".$skuSupplier."\n\r";
+			$product_id = $_item -> getProductId();
+			$product=Mage::getModel("catalog/product")->load($product_id);
+			$supplier_sku = $product -> _getData("supplier_sku");
 
+
+
+			print $qty."x ".$supplier_sku.": ".$name."\n\r";
 		};
-		print "\n\r";
-		print "\n\r";
-		print "\n\r";
-		$product_id = $_item -> getProductId();
-		print $product_id;
-		print "\n\r";
-		print "\n\r";
-
-		$product=Mage::getModel("catalog/product")->load($product_id);
-		//var_dump($product);
-		$supplier = $product -> _getData("supplier_sku");
-		print $supplier;
-		print "\n\r";
-		print "\n\r";
 
 
 		print "\n\r";
