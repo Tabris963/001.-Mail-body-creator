@@ -2,7 +2,8 @@
 	<?php $_order = $this->getOrder();?>
 
 	<textarea class="mailBody" style="background-color:gray; width:95%; height:600px" readonly>
-		<?php print "\n\r"."Hello,"."\n\r";
+		<?php 
+		print "\n\r"."Hello,"."\n\r";
 		print "Please can we place an order for:"."\n\r";
 
 		$_items = $this->getItemsCollection();
@@ -17,10 +18,21 @@
 			//print "\n\r".$skuSupplier."\n\r";
 
 		};
-		/*print "\n\r";
-		var_dump($_item);
-		print "\n\r";*/
-		
+		print "\n\r";
+		print "\n\r";
+		print "\n\r";
+		$product_id = $_item -> getProductId();
+		print $product_id;
+		print "\n\r";
+		print "\n\r";
+
+		$product=Mage::getModel("catalog/product")->load($product_id);
+		//var_dump($product);
+		$supplier = $product -> _getData("supplier_sku");
+		print $supplier;
+		print "\n\r";
+		print "\n\r";
+
 
 		print "\n\r";
 		print "Delivery address:"."\n\r";
