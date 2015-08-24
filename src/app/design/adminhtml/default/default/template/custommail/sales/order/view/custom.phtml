@@ -16,12 +16,15 @@
 			$product_id = $_item -> getProductId();
 			$product=Mage::getModel("catalog/product")->load($product_id);
 			$supplier_sku = $product -> _getData("supplier_sku");
+			$supplier = $product->getAttributeText("supplier");
 
 
 
 			print $qty."x ".$supplier_sku.": ".$name."\n\r";
+			print $supplier."\n\r";
 		};
-
+		print "\n\r";
+		print "\n\r";
 
 		print "\n\r";
 		print "Delivery address:"."\n\r";
