@@ -16,11 +16,13 @@
 			array_push($supplierArray, $supplier);
 		}
 
-		$qty = (int)$_item->getQtyOrdered();
-		$sku = $_item->getSku();
+		//retrieve necessary informations
 		$supplierSku = $product -> _getData("supplier_sku");
+		$sku = $_item->getSku();
 		$name = $_item->_getData('name');
+		$qty = (int)$_item->getQtyOrdered();
 
+		//creation of temporary array
 		$tmpArray = array(
 			"supplierSku" =>$supplierSku,
 			"sku"=> $sku,
@@ -28,33 +30,16 @@
 			"qty" =>$qty
 			);
 
+		//count number of elements and append new element to array
 		$arrayLng = count($productsArray[$supplier]);
-		echo "<strong>arrayLng: </strong>";
-		echo '<pre>';
-		print_r($arrayLng);
-		echo '</pre>';
-		print "<br />";
-
 		$productsArray[$supplier][$arrayLng] = $tmpArray;
-		
 
-		echo "<strong>tmpArray: </strong>";
-		echo '<pre>';
-		print_r($tmpArray);
-		echo '</pre>';
-		print "<br />";
-		print "<br />";
-		print "<br />";
-
+		//IMPORTANT: with the "unset" you clear the variable
+		unset($arrayLng);
 		unset($tmpArray);
-	}
-	print "\n\r";
-	print "\n\r";
-	print "\n\r";
-	echo "<strong>productsArray: </strong>";
-	echo '<pre>';
-	print_r($productsArray);
-	echo '</pre>';	?>
+	}?>
+
+
 	<select id="selectTEST">
 		<?php 
 		foreach($supplierArray as $key => $value){
@@ -67,27 +52,18 @@
 	<br />
 	<br />
 
+
+
+
 	<textarea class="mailBody" style="background-color:gray; width:95%; height:600px" readonly>
 		<?php 
 		print "\n\r"."Hello,"."\n\r";
 		print "Please can we place an order for:"."\n\r";
 
-		/*$_items = $this->getItemsCollection();
-		foreach ($_items as $_item){
-			$qty = (int)$_item->getQtyOrdered();
-			$sku = $_item->getSku();
-			$name = $_item->_getData('name');
-
-			$product_id = $_item -> getProductId();
-			$product=Mage::getModel("catalog/product")->load($product_id);
-			$supplierSku = $product -> _getData("supplier_sku");
-			$supplier = $product->getAttributeText("supplier");
-
-
-			print $qty."x ".$supplierSku.": ".$name."\n\r";
-			print $supplier."\n\r";
-		};*/
-		print "\n\r";
+		foreach($productsArray["Contour"] as $singleProduct){
+			print $singleProduct["qty"]."x ".$singleProduct["supplierSku"].": ".$singleProduct["name"]."\n\r";
+		}
+		
 
 		print "\n\r";
 		print "Delivery address:"."\n\r";
