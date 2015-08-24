@@ -1,0 +1,8 @@
+<config>
+    <modules>
+        <Tb963_CustomMail>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Tb963_CustomMail>
+    </modules>
+</config>

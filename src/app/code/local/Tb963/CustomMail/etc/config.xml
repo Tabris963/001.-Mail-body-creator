@@ -1,0 +1,23 @@
+<config>
+    <modules>
+        <Tb963_CustomMail>
+            <version>0.1.0</version>
+        </Tb963_CustomMail>
+    </modules>
+    <adminhtml>
+        <layout>
+            <updates>
+                <custommail>
+                    <file>tb963_custommail.xml</file>
+                </custommail>
+            </updates>
+        </layout>
+    </adminhtml>
+    <global>
+        <blocks>
+            <custommail>
+                <class>Tb963_CustomMail_Block</class>
+            </custommail>
+        </blocks>
+    </global>
+</config>

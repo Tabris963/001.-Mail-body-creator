@@ -1,0 +1,56 @@
+<div id="tb963TEST" style="background-color: pink;">
+	<?php $_order = $this->getOrder();?>
+
+	<textarea class="mailBody" style="background-color:gray; width:95%; height:600px" readonly>
+		<?php print "\n\r"."Hello,"."\n\r";
+		print "Please can we place an order for:"."\n\r";
+
+		$_items = $this->getItemsCollection();
+		$count = 0;
+		foreach ($_items as $_item){
+			$qty = (int)$_item->getQtyOrdered();
+			$sku = $_item->getSku();
+			//$skuSupplier = $_item->_getData('suplier_sku');
+			$name = $_item->_getData('name');
+
+			print $qty."x ".$sku.": ".$name."\n\r"; 
+			//print "\n\r".$skuSupplier."\n\r";
+
+		};
+		/*print "\n\r";
+		var_dump($_item);
+		print "\n\r";*/
+		
+
+		print "\n\r";
+		print "Delivery address:"."\n\r";
+		print $_order->getShippingAddress()->getFormated(false);
+
+		print "\n\r";
+		print "Many thanks,"."\n\r";
+		?>
+	</textarea>
+
+
+	<p>
+	  <button class="js-textareacopybtn">Copy Textarea</button>
+	</p>
+
+	<script>
+		var copyTextareaBtn = document.querySelector('.js-textareacopybtn');
+
+		copyTextareaBtn.addEventListener('click', function(event) {
+		  var copyTextarea = document.querySelector('.mailBody');
+		  copyTextarea.select();
+
+		  try {
+			var successful = document.execCommand('copy');
+			var msg = successful ? 'successful' : 'unsuccessful';
+			console.log('Copying text command was ' + msg);
+		  } catch (err) {
+			console.log('Oops, unable to copy');
+		  }
+		});
+	</script>
+</div>
+<br />
