@@ -40,14 +40,14 @@
 	}?>
 
 
-	<select id="selectTEST">
+	<select id="selectSupplier">
 		<?php 
 		foreach($supplierArray as $key => $value){
 			echo "<option>".$value."</option>"; 
 		}
 		?>
 	</select>
-	<button onclick="disagio();">Generate text</button>
+	<button onclick="textCreation();">Generate text</button>
 	<button class="js-textareacopybtn">Copy Textarea</button>
 	<br />
 	<br />
@@ -70,43 +70,47 @@
 
 		print "\n\r";
 		print "Many thanks,"."\n\r";*/
+		/*echo '<pre>';
+		print_r($shippingAddress = $_order->getShippingAddress()->getFormated(true));
+		echo '</pre>';*/
+		$shippingAddress = $_order->getShippingAddress()->getFormated(false);
 	?>
-
+	
 	<textarea id="mailBody" style="background-color:gray; width:95%; height:600px" readonly>
 	</textarea>
 
 
 
 	<script>
-	function disagio(){
+	function textCreation(){
 		document.getElementById('mailBody').value = '';
 		
-		var e = document.getElementById("selectTEST");
-		var strUser = e.options[e.selectedIndex].text;
-		console.log(strUser);
+		var e = document.getElementById("selectSupplier");
+		var chosenSupplier = e.options[e.selectedIndex].text;
 
 		var productsArray = <?php echo json_encode($productsArray);?>;
-		//console.log(productsArray);
-		//console.log(productsArray["Contour"]);
+
+		var shippingAddress = <?php echo json_encode($shippingAddress); ?>;
+		//the replace is done twice because some \n can't be sensed the first time
+		shippingAddress = shippingAddress.replace(/(\n\n)/gm,"\n");
+		shippingAddress = shippingAddress.replace(/(\n\n)/gm,"\n");
 
 		var text = "Hello,\n"
 					+"\n"
 					+"Please can we place an order for: "
 					+"\n";
-		var sltSupplier = productsArray[strUser];
 
-		for(var i=0; i<sltSupplier.length; i++){
-			text += sltSupplier[i]["qty"]+"x "
-					+sltSupplier[i]["supplierSku"]+": "
-					+sltSupplier[i]["name"]
+		for(var i=0; i<productsArray[chosenSupplier].length; i++){
+			text += productsArray[chosenSupplier][i]["qty"]+"x "
+					+productsArray[chosenSupplier][i]["supplierSku"]+": "
+					+productsArray[chosenSupplier][i]["name"]
 					+"\n";
 		};
 
 		text += "\n"
 				+"Delivery address: "
 				+"\n"
-				+"(currently working on this)"
-				+"\n"
+				+shippingAddress
 				+"\n"
 				+"\n"
 				+"Many thanks,"
@@ -120,7 +124,7 @@
 		var copyTextareaBtn = document.querySelector('.js-textareacopybtn');
 
 		copyTextareaBtn.addEventListener('click', function(event) {
-		  var copyTextarea = document.querySelector('.mailBody');
+		  var copyTextarea = document.querySelector('#mailBody');
 		  copyTextarea.select();
 
 		  try {
