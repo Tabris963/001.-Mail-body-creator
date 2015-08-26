@@ -1,15 +1,29 @@
 <div id="tb963TEST" style="background-color: pink;">
-	<?php $_order = $this->getOrder();
+	<?php
+	$_order = $this->getOrder();
 
 	$supplierArray = array();
 	$productsArray = array();
+	$productOptions = array();
 	$_items = $this->getItemsCollection();
 
 	foreach ($_items as $_item){
 		$product_id = $_item -> getProductId();
 		$product=Mage::getModel("catalog/product")->load($product_id);
 		$supplier = $product->getAttributeText("supplier");
+		$rawProductOptions = unserialize($_item->getData("product_options"));
 
+		//creation of custom options ("product_options") array
+		foreach($rawProductOptions["options"] as $singleOption){
+			$optionsArrayLng = count($productOptions);
+			$tmpOptsArray = array(
+				"label" => $singleOption["label"],
+				"value"=> $singleOption["value"]
+				);
+			$productOptions[$optionsArrayLng] = $tmpOptsArray;
+			unset($optsArrayLng);
+			unset($tmpOptsArray);
+		}
 
 		//element not inside array
 		if(!in_array($supplier, $supplierArray)){
@@ -23,22 +37,25 @@
 		$qty = (int)$_item->getQtyOrdered();
 
 		//creation of temporary array
-		$tmpArray = array(
+		$tmpProductArray = array(
 			"supplierSku" =>$supplierSku,
-			"sku"=> $sku,
+			"sku" => $sku,
 			"name" =>$name,
-			"qty" =>$qty
+			"qty" =>$qty,
+			"options" =>$productOptions
 			);
 
 		//count number of elements and append new element to array
-		$arrayLng = count($productsArray[$supplier]);
-		$productsArray[$supplier][$arrayLng] = $tmpArray;
+		$productArrayLng = count($productsArray[$supplier]);
+		$productsArray[$supplier][$productArrayLng] = $tmpProductArray;
 
 		//IMPORTANT: with the "unset" you clear the variable
-		unset($arrayLng);
-		unset($tmpArray);
-	}?>
-
+		unset($productArrayLng);
+		unset($tmpProductArray);
+	};
+	//get shipping address
+	$shippingAddress = $_order->getShippingAddress()->getFormated(false);
+	?>
 
 	<select id="selectSupplier">
 		<?php 
@@ -52,29 +69,6 @@
 	<br />
 	<br />
 	<br />
-
-
-
-	<?php 
-		/*print "\n\r"."Hello,"."\n\r";
-		print "Please can we place an order for:"."\n\r";
-
-		foreach($productsArray["Contour"] as $singleProduct){
-			print $singleProduct["qty"]."x ".$singleProduct["supplierSku"].": ".$singleProduct["name"]."\n\r";
-		}
-		
-
-		print "\n\r";
-		print "Delivery address:"."\n\r";
-		print $_order->getShippingAddress()->getFormated(false);
-
-		print "\n\r";
-		print "Many thanks,"."\n\r";*/
-		/*echo '<pre>';
-		print_r($shippingAddress = $_order->getShippingAddress()->getFormated(true));
-		echo '</pre>';*/
-		$shippingAddress = $_order->getShippingAddress()->getFormated(false);
-	?>
 	
 	<textarea id="mailBody" style="background-color:gray; width:95%; height:600px" readonly>
 	</textarea>
@@ -101,10 +95,25 @@
 					+"\n";
 
 		for(var i=0; i<productsArray[chosenSupplier].length; i++){
-			text += productsArray[chosenSupplier][i]["qty"]+"x "
-					+productsArray[chosenSupplier][i]["supplierSku"]+": "
-					+productsArray[chosenSupplier][i]["name"]
-					+"\n";
+			if(productsArray[chosenSupplier][i]["options"].length==0){
+				text += productsArray[chosenSupplier][i]["qty"]+"x "
+						+productsArray[chosenSupplier][i]["supplierSku"]+": "
+						+productsArray[chosenSupplier][i]["name"]
+						+"\n";	
+			}else{
+				text += productsArray[chosenSupplier][i]["qty"]+"x "
+				+productsArray[chosenSupplier][i]["supplierSku"]+": "
+				+productsArray[chosenSupplier][i]["name"]
+				+"\n";
+
+				for(var j=0; j<productsArray[chosenSupplier][i]["options"].length; j++){
+					text += "\t"
+							+productsArray[chosenSupplier][i]["options"][j]["label"]
+							+": "
+							+productsArray[chosenSupplier][i]["options"][j]["value"]
+							+"\n";
+				}	
+			}
 		};
 
 		text += "\n"
