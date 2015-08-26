@@ -1,76 +1,76 @@
-<div id="tb963CustomMail" style="background-color: pink;">
-	<?php
-	$_order = $this->getOrder();
+<?php
+$_order = $this->getOrder();
 
-	$supplierArray = array();
-	$productsArray = array();
-	$productOptions = array();
-	$_items = $this->getItemsCollection();
+$supplierArray = array();
+$productsArray = array();
+$productOptions = array();
+$_items = $this->getItemsCollection();
 
-	foreach ($_items as $_item){
-		$product_id = $_item -> getProductId();
-		$product=Mage::getModel("catalog/product")->load($product_id);
-		$supplier = $product->getAttributeText("supplier");
-		$rawProductOptions = unserialize($_item->getData("product_options"));
+foreach ($_items as $_item){
+	$product_id = $_item -> getProductId();
+	$product=Mage::getModel("catalog/product")->load($product_id);
+	$supplier = $product->getAttributeText("supplier");
+	$rawProductOptions = unserialize($_item->getData("product_options"));
 
-		//creation of custom options ("product_options") array
-		foreach($rawProductOptions["options"] as $singleOption){
-			$optionsArrayLng = count($productOptions);
-			$tmpOptsArray = array(
-				"label" => $singleOption["label"],
-				"value"=> $singleOption["value"]
-				);
-			$productOptions[$optionsArrayLng] = $tmpOptsArray;
-			unset($optsArrayLng);
-			unset($tmpOptsArray);
-		}
-
-		//element not inside array
-		if(!in_array($supplier, $supplierArray)){
-			array_push($supplierArray, $supplier);
-		}
-
-		//retrieve necessary informations
-		$supplierSku = $product -> _getData("supplier_sku");
-		$sku = $_item->getSku();
-		$name = $_item->_getData('name');
-		$qty = (int)$_item->getQtyOrdered();
-
-		//creation of temporary array
-		$tmpProductArray = array(
-			"supplierSku" =>$supplierSku,
-			"sku" => $sku,
-			"name" =>$name,
-			"qty" =>$qty,
-			"options" =>$productOptions
+	//creation of custom options ("product_options") array
+	foreach($rawProductOptions["options"] as $singleOption){
+		$optionsArrayLng = count($productOptions);
+		$tmpOptsArray = array(
+			"label" => $singleOption["label"],
+			"value"=> $singleOption["value"]
 			);
+		$productOptions[$optionsArrayLng] = $tmpOptsArray;
+		unset($optsArrayLng);
+		unset($tmpOptsArray);
+	}
 
-		//count number of elements and append new element to array
-		$productArrayLng = count($productsArray[$supplier]);
-		$productsArray[$supplier][$productArrayLng] = $tmpProductArray;
+	//element not inside array
+	if(!in_array($supplier, $supplierArray)){
+		array_push($supplierArray, $supplier);
+	}
 
-		//IMPORTANT: with the "unset" you clear the variable
-		unset($productArrayLng);
-		unset($tmpProductArray);
-	};
-	//get shipping address
-	$shippingAddress = $_order->getShippingAddress()->getFormated(false);
-	?>
+	//retrieve necessary informations
+	$supplierSku = $product -> _getData("supplier_sku");
+	$sku = $_item->getSku();
+	$name = $_item->_getData('name');
+	$qty = (int)$_item->getQtyOrdered();
 
-	<select id="selectSupplier">
-		<?php 
-		foreach($supplierArray as $key => $value){
-			echo "<option>".$value."</option>"; 
-		}
-		?>
-	</select>
-	<button onclick="textCreation();">Generate text</button>
-	<button class="js-textareacopybtn">Copy Textarea</button>
-	<br />
-	<br />
-	<br />
-	
-	<textarea id="mailBody" style="background-color:gray; width:95%; height:600px" readonly>
+	//creation of temporary array
+	$tmpProductArray = array(
+		"supplierSku" =>$supplierSku,
+		"sku" => $sku,
+		"name" =>$name,
+		"qty" =>$qty,
+		"options" =>$productOptions
+		);
+
+	//count number of elements and append new element to array
+	$productArrayLng = count($productsArray[$supplier]);
+	$productsArray[$supplier][$productArrayLng] = $tmpProductArray;
+
+	//IMPORTANT: with the "unset" you clear the variable
+	unset($productArrayLng);
+	unset($tmpProductArray);
+};
+//get shipping address
+$shippingAddress = $_order->getShippingAddress()->getFormated(false);
+?>
+<div id="tb963CustomMail">
+	<div id="buttonsRow" style="text-align: right">
+		<select id="selectSupplier">
+			<?php 
+			foreach($supplierArray as $key => $value){
+				echo "<option>".$value."</option>"; 
+			}
+			?>
+		</select>
+		<button onclick="textCreation();">Generate text</button>
+		<button onclick="copyText();">Copy Textarea</button>
+	</div>
+	<br clear:"all">
+
+
+	<textarea id="mailBody" style="background-color:#F6F6F6; width:60%; height:500px" readonly>
 	</textarea>
 
 
@@ -81,9 +81,7 @@
 		
 		var e = document.getElementById("selectSupplier");
 		var chosenSupplier = e.options[e.selectedIndex].text;
-
 		var productsArray = <?php echo json_encode($productsArray);?>;
-
 		var shippingAddress = <?php echo json_encode($shippingAddress); ?>;
 		//the replace is done twice because some \n can't be sensed the first time
 		shippingAddress = shippingAddress.replace(/(\n\n)/gm,"\n");
@@ -115,7 +113,6 @@
 				}	
 			}
 		};
-
 		text += "\n"
 				+"Delivery address: "
 				+"\n"
@@ -124,26 +121,21 @@
 				+"\n"
 				+"Many thanks,"
 				+"\n";
-
 		document.getElementById('mailBody').value = text;
 	}
-	</script>
 
-	<script>
-		var copyTextareaBtn = document.querySelector('.js-textareacopybtn');
+	function copyText(){
+		var copyTextarea = document.querySelector('#mailBody');
+	  	copyTextarea.select();
 
-		copyTextareaBtn.addEventListener('click', function(event) {
-		  var copyTextarea = document.querySelector('#mailBody');
-		  copyTextarea.select();
-
-		  try {
-			var successful = document.execCommand('copy');
+	  	try {
+	  		var successful = document.execCommand('copy');
 			var msg = successful ? 'successful' : 'unsuccessful';
 			console.log('Copying text command was ' + msg);
-		  } catch (err) {
-			console.log('Oops, unable to copy');
-		  }
-		});
+	  	} catch (err) {
+	  		console.log('Oops, unable to copy');
+		}
+	}
 	</script>
 </div>
 <br />
