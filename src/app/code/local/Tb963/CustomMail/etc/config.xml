@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <config>
     <modules>
         <Tb963_CustomMail>
@@ -7,17 +8,17 @@
     <adminhtml>
         <layout>
             <updates>
-                <custommail>
+                <tb963_custommail>
                     <file>tb963_custommail.xml</file>
-                </custommail>
+                </tb963_custommail>
             </updates>
         </layout>
     </adminhtml>
     <global>
         <blocks>
-            <custommail>
+            <tb963_custommail>
                 <class>Tb963_CustomMail_Block</class>
-            </custommail>
+            </tb963_custommail>
         </blocks>
     </global>
 </config>

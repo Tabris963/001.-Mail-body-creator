@@ -1,8 +1,10 @@
 <layout version="0.1.0">
 	<adminhtml_sales_order_view>
-		<reference name="order_items">
-			<action method="setTemplate"><template>custommail/sales/order/view/items.phtml</template></action>
-			<block type="custommail/sales_order_view_custom" name="custommail_sales_order_view_custom" template="custommail/sales/order/view/custom.phtml"/>
-		</reference>
+		<reference name="sales_order_tabs">
+            <action method="addTab">
+                <name>tb963_custommail_order_view_tab</name>
+                 <block>tb963_custommail/adminhtml_order_view_tab_contents</block>
+            </action>
+        </reference>
 	</adminhtml_sales_order_view>
 </layout>
