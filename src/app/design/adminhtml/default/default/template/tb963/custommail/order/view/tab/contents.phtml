@@ -74,9 +74,9 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 	</textarea>
 
 
-
 	<script>
 	function textCreation(){
+		//cleaning of the textarea
 		document.getElementById('mailBody').value = '';
 		
 		var e = document.getElementById("selectSupplier");
@@ -121,6 +121,7 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 				+"\n"
 				+"Many thanks,"
 				+"\n";
+		//insert text into textarea
 		document.getElementById('mailBody').value = text;
 	}
 
