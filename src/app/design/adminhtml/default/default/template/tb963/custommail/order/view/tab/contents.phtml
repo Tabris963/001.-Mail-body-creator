@@ -3,10 +3,10 @@ $_order = $this->getOrder();
 
 $supplierArray = array();
 $productsArray = array();
-$productOptions = array();
 $_items = $this->getItemsCollection();
 
 foreach ($_items as $_item){
+	$productOptions = array();
 	$product_id = $_item -> getProductId();
 	$product=Mage::getModel("catalog/product")->load($product_id);
 	$supplier = $product->getAttributeText("supplier");
@@ -51,6 +51,7 @@ foreach ($_items as $_item){
 	//IMPORTANT: with the "unset" you clear the variable
 	unset($productArrayLng);
 	unset($tmpProductArray);
+	unset($productOptions);
 };
 //get shipping address
 $shippingAddress = $_order->getShippingAddress()->getFormated(false);
@@ -94,15 +95,17 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 
 		for(var i=0; i<productsArray[chosenSupplier].length; i++){
 			if(productsArray[chosenSupplier][i]["options"].length==0){
-				text += productsArray[chosenSupplier][i]["qty"]+"x "
+				text += "\n"
+						+productsArray[chosenSupplier][i]["qty"]+"x "
 						+productsArray[chosenSupplier][i]["supplierSku"]+": "
 						+productsArray[chosenSupplier][i]["name"]
 						+"\n";	
 			}else{
-				text += productsArray[chosenSupplier][i]["qty"]+"x "
-				+productsArray[chosenSupplier][i]["supplierSku"]+": "
-				+productsArray[chosenSupplier][i]["name"]
-				+"\n";
+				text += "\n"
+						+productsArray[chosenSupplier][i]["qty"]+"x "
+						+productsArray[chosenSupplier][i]["supplierSku"]+": "
+						+productsArray[chosenSupplier][i]["name"]
+						+"\n";
 
 				for(var j=0; j<productsArray[chosenSupplier][i]["options"].length; j++){
 					text += "\t"
@@ -114,10 +117,9 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 			}
 		};
 		text += "\n"
-				+"Delivery address: "
+				+"Delivery address: \n"
 				+"\n"
 				+shippingAddress
-				+"\n"
 				+"\n"
 				+"Many thanks,"
 				+"\n";
