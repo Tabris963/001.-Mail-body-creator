@@ -12,17 +12,22 @@ foreach ($_items as $_item){
 	$supplier = $product->getAttributeText("supplier");
 	$rawProductOptions = unserialize($_item->getData("product_options"));
 
-	//creation of custom options ("product_options") array
-	foreach($rawProductOptions["options"] as $singleOption){
-		$optionsArrayLng = count($productOptions);
-		$tmpOptsArray = array(
-			"label" => $singleOption["label"],
-			"value"=> $singleOption["value"]
-			);
-		$productOptions[$optionsArrayLng] = $tmpOptsArray;
-		unset($optsArrayLng);
-		unset($tmpOptsArray);
+	
+	//check if "options" is present into $rawProductOptions
+	if(in_array("options",array_keys($rawProductOptions))){
+		//creation of custom options ("product_options") array
+		foreach($rawProductOptions["options"] as $singleOption){
+			$optionsArrayLng = count($productOptions);
+			$tmpOptsArray = array(
+				"label" => $singleOption["label"],
+				"value"=> $singleOption["value"]
+				);
+			$productOptions[$optionsArrayLng] = $tmpOptsArray;
+			unset($optsArrayLng);
+			unset($tmpOptsArray);
+		}
 	}
+	
 
 	//element not inside array
 	if(!in_array($supplier, $supplierArray)){
@@ -44,6 +49,11 @@ foreach ($_items as $_item){
 		"options" =>$productOptions
 		);
 
+	
+	//check if index $supplier exists, if not it will be added to the $productsArray
+	if(!in_array($supplier, array_keys($productsArray))){
+		$productsArray[$supplier] = array();
+	}
 	//count number of elements and append new element to array
 	$productArrayLng = count($productsArray[$supplier]);
 	$productsArray[$supplier][$productArrayLng] = $tmpProductArray;
@@ -66,7 +76,7 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 			?>
 		</select>
 		<button onclick="textCreation();">Generate text</button>
-		<button onclick="copyText();">Copy Textarea</button>
+		<button onclick="copyText();">Copy textarea</button>
 	</div>
 	<br clear:"all">
 
@@ -137,7 +147,29 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 			console.log('Copying text command was ' + msg);
 	  	} catch (err) {
 	  		console.log('Oops, unable to copy');
+	  		console.log("err:\n\n"+err);
 		}
+		//by the time the function addComment() will stay here, out of the try-catch, because of problems with Firefox
+		addComment();
+	}
+
+
+
+	function addComment(){
+		var e = document.getElementById("selectSupplier");
+		var chosenSupplier = e.options[e.selectedIndex].text;
+
+		var addcomment = new XMLHttpRequest(); //New request object
+
+		var tempPath= "<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/customMail/comment/'); ?>"+"?isAjax=true"+"&orderID="+<?php echo $_order->getId(); ?>+"&supplier="+chosenSupplier;
+		console.log("tempPath = "+tempPath);
+		console.log("orderID = "+<?php echo $_order->getId(); ?>);
+		console.log("supplier = "+chosenSupplier);
+		
+		var addcomment = new XMLHttpRequest();
+		addcomment.open("get", tempPath, true);
+		addcomment.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		addcomment.send();
 	}
 	</script>
 </div>

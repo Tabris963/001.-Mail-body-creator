@@ -21,4 +21,15 @@
             </tb963_custommail>
         </blocks>
     </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Tb963_CustomMail after="Mage_Adminhtml">Tb963_CustomMail</Tb963_CustomMail>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
 </config>
