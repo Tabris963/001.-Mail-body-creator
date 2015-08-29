@@ -70,9 +70,9 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 	<div id="buttonsRow" style="text-align: right">
 		<select id="selectSupplier">
 			<?php 
-			foreach($supplierArray as $key => $value){
-				echo "<option>".$value."</option>"; 
-			}
+				foreach($supplierArray as $key => $value){
+					echo "<option>".$value."</option>"; 
+				}
 			?>
 		</select>
 		<button onclick="textCreation();">Generate text</button>
@@ -161,13 +161,10 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 
 		var addcomment = new XMLHttpRequest(); //New request object
 
-		var tempPath= "<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/customMail/comment/'); ?>"+"?isAjax=true"+"&orderID="+<?php echo $_order->getId(); ?>+"&supplier="+chosenSupplier;
-		console.log("tempPath = "+tempPath);
-		console.log("orderID = "+<?php echo $_order->getId(); ?>);
-		console.log("supplier = "+chosenSupplier);
+		var commentPath= "<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/customMail/comment/'); ?>"+"?isAjax=true"+"&orderID="+<?php echo $_order->getId(); ?>+"&supplier="+chosenSupplier;
 		
 		var addcomment = new XMLHttpRequest();
-		addcomment.open("get", tempPath, true);
+		addcomment.open("get", commentPath, true);
 		addcomment.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 		addcomment.send();
 	}
