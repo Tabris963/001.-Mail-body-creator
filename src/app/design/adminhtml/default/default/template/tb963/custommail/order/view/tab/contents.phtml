@@ -94,7 +94,8 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 		var chosenSupplier = e.options[e.selectedIndex].text;
 		var productsArray = <?php echo json_encode($productsArray);?>;
 		var shippingAddress = <?php echo json_encode($shippingAddress); ?>;
-		//the replace is done twice because some \n can't be sensed the first time
+		//the replace is done three times because some \n can't be sensed the first and the second time
+		shippingAddress = shippingAddress.replace(/(\n\n)/gm,"\n");
 		shippingAddress = shippingAddress.replace(/(\n\n)/gm,"\n");
 		shippingAddress = shippingAddress.replace(/(\n\n)/gm,"\n");
 
@@ -160,6 +161,8 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 		var chosenSupplier = e.options[e.selectedIndex].text;
 
 		var addcomment = new XMLHttpRequest(); //New request object
+
+		chosenSupplier = chosenSupplier.replace(" ", "_");
 
 		var commentPath= "<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/customMail/comment/'); ?>"+"?isAjax=true"+"&orderID="+<?php echo $_order->getId(); ?>+"&supplier="+chosenSupplier;
 		

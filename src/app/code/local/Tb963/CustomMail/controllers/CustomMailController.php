@@ -10,6 +10,7 @@ class Tb963_CustomMail_CustomMailController extends Mage_Adminhtml_Controller_Ac
     {
     	$orderID=$_GET['orderID'];
         $supplier=$_GET['supplier'];
+        $supplier=str_replace("_"," ", $supplier);
         $_order = Mage::getModel('sales/order')->load($orderID);
         $_order->addStatusToHistory($_order->getStatus(), 'Ordered placed with: '.$supplier, false);
         $_order->save();
