@@ -92,6 +92,9 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 		
 		var e = document.getElementById("selectSupplier");
 		var chosenSupplier = e.options[e.selectedIndex].text;
+		//in order to prevent the issue that makes you not see all the products when there is a "blank row" (which appear when a supplier hasn't been added to the product)
+		if(chosenSupplier=="")
+			chosenSupplier=0;
 		var productsArray = <?php echo json_encode($productsArray);?>;
 		var shippingAddress = <?php echo json_encode($shippingAddress); ?>;
 
