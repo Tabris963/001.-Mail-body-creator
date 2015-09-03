@@ -10,6 +10,9 @@ foreach ($_items as $_item){
 	$product_id = $_item -> getProductId();
 	$product=Mage::getModel("catalog/product")->load($product_id);
 	$supplier = $product->getAttributeText("supplier");
+	if($supplier==""){
+		$supplier="(Supplier not set!)";
+	}
 	$rawProductOptions = unserialize($_item->getData("product_options"));
 
 	
@@ -68,7 +71,7 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 ?>
 <div id="tb963CustomMail">
 	<div id="buttonsRow" style="text-align: right">
-		<select id="selectSupplier">
+		<select id="selectSupplier" style="padding-right: 20px;">
 			<?php 
 				foreach($supplierArray as $key => $value){
 					echo "<option>".$value."</option>"; 
@@ -94,13 +97,27 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 		var chosenSupplier = e.options[e.selectedIndex].text;
 		//in order to prevent the issue that makes you not see all the products when there is a "blank row" (which appear when a supplier hasn't been added to the product)
 		if(chosenSupplier=="")
-			chosenSupplier=0;
+			chosenSupplier="Missing supplier in the Array";
+
 		var productsArray = <?php echo json_encode($productsArray);?>;
 		var shippingAddress = <?php echo json_encode($shippingAddress); ?>;
 
 		//the action is performed until the search returns index -1 for the position of a "\n\n"
 		while(shippingAddress.search("\n\n")>-1){
 			shippingAddress = shippingAddress.replace(/(\n\n)/gm,"\n");
+		}
+
+		if(shippingAddress.indexOf("VAT:")>-1){
+			//remove VAT data from the shipping address
+			shippingAddress = shippingAddress.split("\n");
+			for(var k=0; k<shippingAddress.length;k++){
+				if(shippingAddress[k].startsWith("VAT:")){
+					//remove 1 element from the position k of the array
+					shippingAddress.splice(k, 1);
+				}
+			}
+			shippingAddress = shippingAddress.join("\n");
+			shippingAddress += "\n";
 		}
 
 		var text = "Hello,\n"
