@@ -4,6 +4,11 @@ $_order = $this->getOrder();
 $supplierArray = array();
 $productsArray = array();
 $_items = $this->getItemsCollection();
+//get delivery note
+$deliveryNoteId = $_order->getData("delivery_note_id");
+if($deliveryNoteId){
+	$deliveryNote = Mage::getModel("deliverynote/note")->load($deliveryNoteId)->getData('note');
+}
 
 foreach ($_items as $_item){
 	$productOptions = array();
@@ -101,6 +106,7 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 
 		var productsArray = <?php echo json_encode($productsArray);?>;
 		var shippingAddress = <?php echo json_encode($shippingAddress); ?>;
+		var deliveryNote = <?php echo json_encode($deliveryNote);?>;
 
 		//the action is performed until the search returns index -1 for the position of a "\n\n"
 		while(shippingAddress.search("\n\n")>-1){
@@ -118,6 +124,16 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 			}
 			shippingAddress = shippingAddress.join("\n");
 			shippingAddress += "\n";
+		}
+
+		if(deliveryNote!=null){
+			deliveryNote = "Delivery note request:"
+							+ "\n"
+							+ deliveryNote
+							+ "\n"
+							+ "\n";
+		}else{
+			deliveryNote = "";
 		}
 
 		var text = "Hello,\n"
@@ -153,6 +169,7 @@ $shippingAddress = $_order->getShippingAddress()->getFormated(false);
 				+"\n"
 				+shippingAddress
 				+"\n"
+				+deliveryNote
 				+"Many thanks,"
 				+"\n";
 		//insert text into textarea
